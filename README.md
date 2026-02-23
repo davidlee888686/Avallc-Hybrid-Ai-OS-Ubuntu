@@ -171,6 +171,17 @@ python3 tools/aava_migration.py feature-manifest --version 1.5 --output docs/fea
 
 Fill in implementation status in that manifest while deciding the final “best” version.
 
+
+### What next (guided sequence)
+
+```bash
+python3 tools/aava_migration.py next-steps --version 1.0
+python3 tools/aava_migration.py next-steps --version 1.0 --output json
+```
+
+This explains commit IDs (like `84f8bf3`) and prints a recommended execution order for merge/prep/build work.
+
+
 ### Ultimate multi-folder merge (best-of build)
 
 Use this to merge multiple source trees into one combined project with conflict strategy control:

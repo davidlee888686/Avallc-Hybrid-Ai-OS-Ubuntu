@@ -203,6 +203,18 @@ class TestVersionCompareAndFeatureManifest(unittest.TestCase):
             self.assertIn("custom_tab", names)
 
 
+class TestNextSteps(unittest.TestCase):
+    def test_next_steps_json(self):
+        args = argparse.Namespace(version="1.0", output="json")
+        buf = StringIO()
+        with redirect_stdout(buf):
+            code = am.cmd_next_steps(args)
+        self.assertEqual(code, 0)
+        payload = json.loads(buf.getvalue())
+        self.assertIn("recommended_steps", payload)
+        self.assertGreaterEqual(len(payload["recommended_steps"]), 1)
+
+
 class TestParser(unittest.TestCase):
     def test_parser_includes_doctor(self):
         parser = am.build_parser()

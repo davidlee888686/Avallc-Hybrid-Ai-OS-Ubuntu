@@ -713,6 +713,15 @@ REQUIRED_FEATURES = [
     "addins_support",
 ]
 
+DEFAULT_NEXT_STEPS = [
+    "Run dependency check: doctor --output json",
+    "Create/update merged workspace: ultimate-merge --sources ... --output-root merge_output --strategy newest",
+    "Run first build prep on merged workspace: first-build-prep --project-root merge_output/merged_project --version 1.0",
+    "Generate feature checklist: feature-manifest --version 1.0 --output docs/feature_manifest.json",
+    "Implement missing features and mark them in the manifest",
+    "Register next version snapshot (for example 1.1, 1.2) after each stable milestone",
+]
+
 
 def list_files_relative(root: Path) -> set[str]:
     out: set[str] = set()
@@ -801,6 +810,32 @@ def cmd_feature_manifest(args: argparse.Namespace) -> int:
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(manifest, indent=2))
     print(f"Feature manifest template created: {out}")
+    return 0
+
+
+def cmd_next_steps(args: argparse.Namespace) -> int:
+    plan = {
+        "current_version": args.version,
+        "notes": [
+            "A commit id like 84f8bf3 is a saved snapshot in git history.",
+            "Run `git log --oneline` to list snapshots and `git show <id>` to inspect one.",
+        ],
+        "recommended_steps": DEFAULT_NEXT_STEPS,
+    }
+
+    if args.output == "json":
+        print(json.dumps(plan, indent=2))
+        return 0
+
+    print("== What next ==")
+    print(f"Current working version: {args.version}")
+    print("\nAbout commit IDs:")
+    for note in plan["notes"]:
+        print(f"- {note}")
+
+    print("\nRecommended next steps:")
+    for i, step in enumerate(plan["recommended_steps"], start=1):
+        print(f"{i}. {step}")
     return 0
 
 def cmd_first_build_prep(args: argparse.Namespace) -> int:
@@ -957,6 +992,11 @@ def build_parser() -> argparse.ArgumentParser:
     p_feat.add_argument("--output", default="docs/feature_manifest.json")
     p_feat.add_argument("--extra-feature", action="append", default=[])
     p_feat.set_defaults(func=cmd_feature_manifest)
+
+    p_next = sub.add_parser("next-steps", help="Show recommended sequence after setup and explain commit IDs")
+    p_next.add_argument("--version", default="1.0")
+    p_next.add_argument("--output", choices=["text", "json"], default="text")
+    p_next.set_defaults(func=cmd_next_steps)
 
     return parser
 
