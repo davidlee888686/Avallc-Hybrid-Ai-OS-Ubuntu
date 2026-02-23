@@ -200,3 +200,33 @@ Outputs:
 
 - merged files: `merge_output/merged_project/`
 - merge report: `merge_output/merge_report/merge_report.json`
+
+
+## PR vs patch: which should you use?
+
+If you are changing this repo directly, use a **new PR** (recommended default):
+
+```bash
+git checkout work
+# make your edits
+git add -A
+git commit -m "Describe the change"
+# open/update PR
+```
+
+Use a **patch** only when you need to move changes between environments or send edits without pushing a branch:
+
+```bash
+# create patch from latest commit
+git format-patch -1 HEAD
+
+# OR create a patch for unstaged/staged changes
+git diff > my_changes.patch
+
+# apply later
+git apply my_changes.patch
+```
+
+Quick rule:
+- Same repo workflow: **new PR**.
+- Offline/portable handoff: **patch (`git apply`)**.
