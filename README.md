@@ -5,6 +5,14 @@
 This repo now includes two helper scripts for building a complete understanding of your source materials.
 
 
+## Quick start (one command)
+
+To begin immediately, run the kickoff orchestrator. It attempts bootstrap + deep scan + PDF scans and writes a timestamped report in `reports/`.
+
+```bash
+./tools/start_aava_migration.sh AAVA_Project_vNext /workspace
+```
+
 ## 0) Bootstrap a working copy of the project
 
 Use this to copy your source project into a new working folder and rename it.
